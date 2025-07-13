@@ -4,7 +4,10 @@ import InputForm from "../Elements/Input/Index.jsx";
 const FormLogin = () => {
   const handleLogin = (e) => {
     e.preventDefault();
+    localStorage.setItem("email", e.target.email.value);
+    localStorage.setItem("password", e.target.password.value);
     console.log("Login button clicked");
+    window.location.href = "/products"; 
   };
   return (
     <form onSubmit={handleLogin}>
