@@ -1,4 +1,6 @@
-const Input = (props) => {
+import { forwardRef } from "react";
+
+const Input = forwardRef((props, ref) => {
   const { type = "text", name, placeholder, id, autoComplete} = props;
   return (
     <input
@@ -8,9 +10,10 @@ const Input = (props) => {
       placeholder={placeholder}
       id={id}
       autoComplete={autoComplete}
-      {...props} // This allows passing additional props like autoComplete
+      ref={ref}
+      {...props} 
     />
   );
-};
+})
 
 export default Input;

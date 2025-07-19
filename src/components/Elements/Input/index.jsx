@@ -1,7 +1,8 @@
 import Label from "./Label.jsx";
 import Input from "./Input.jsx";
+import { forwardRef } from "react";
 
-const InputForm = (props) => {
+const InputForm = forwardRef((props, ref) => {
   const { children, name, type, placeholder, ...rest } = props;
   return (
     <div className="mb-6">
@@ -11,10 +12,11 @@ const InputForm = (props) => {
         name={name}
         id={name}
         placeholder={placeholder}
-        {...rest}  // <-- Ini penting untuk kirim autoComplete dan lainnya
+        ref={ref}
+        {...rest}  
       />
     </div>
   );
-};
+})
 
 export default InputForm;

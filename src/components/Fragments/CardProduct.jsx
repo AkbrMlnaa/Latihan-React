@@ -3,17 +3,17 @@ import Button from "../Elements/Button";
 const CardProduct = (props) => {
   const { children } = props;
   return (
-    <div className="w-full max-w-sm border-2 bg-blue-950 border-blue-400 rounded-lg p-6 shadow mx-2 flex flex-col justify-between">
+   <div className="w-full h-full border-2 bg-white border-blue-400 rounded-lg p-6 shadow mx-2 my-2 flex flex-col justify-between">
       {children}
     </div>
-  );
+  )
 };
 
 const Header = (props) => {
   const { image } = props;
   return (
     <a href="#">
-      <img src={image} alt="product" className="p-8 rounded-t-lg" />
+      <img src={image} alt="product" className="p-8 rounded-t-lg h-60 w-full object-cover" />
     </a>
   );
 };
@@ -23,21 +23,21 @@ const Body = (props) => {
   return (
     <div className="px-5 pb-5">
       <a href="">
-        <h5 className="text-xl font-semibold tracking-tight text-white">
+        <h5 className="text-xl font-bold tracking-tight text-black">
           {title}
         </h5>
-        <p className="text-m text-white">{children}</p>
+        <p className="text-lg text-black">{children.substring(0, 35)}</p>
       </a>
     </div>
   );
 };
 
 const Footer = (props) => {
-  const { price } = props;
+  const { price, onClick, id } = props;
   return (
-    <div className="px-5 pb-5 flex items-center justify-between content-between">
-      <span className="text-2xl font-bold text-white">{price}</span>
-      <Button customize="bg-blue-600">Add to Cart</Button>
+    <div className="pb-5 flex items-center justify-between">
+      <span className="text-xl font-bold text-black">{price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</span>
+      <Button customize="bg-blue-600" onClick={() => onClick(id)} >Add to Cart</Button>
     </div>
   );
 };
