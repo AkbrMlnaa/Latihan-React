@@ -1,18 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../components/Elements/Button";
 import CardProduct from "../components/Fragments/CardProduct";
 import { getProducts } from "../services/produk.service";
+import { getUsername } from "../services/auth.service";
 
 const ProductsPage = () => {
-  const email = localStorage.getItem("email");
-
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [totalHarga, setTotalHarga] = useState(0);
+  const [username, setUsername] = useState("");
 
   // Ambil cart dari localStorage saat pertama kali render
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem("cart")) || []);
+  }, []);
+
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const name = getUsername(token);
+        setUsername(name);
+      } else {
+        window.location.href = "/login";
+      }
+    } catch (err) {
+      console.error("Token tidak valid", err);
+    }
   }, []);
 
   // Update total harga dan simpan cart ke localStorage
@@ -47,8 +61,7 @@ const ProductsPage = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("email");
-    localStorage.removeItem("password");
+    localStorage.removeItem("token");
     window.location.href = "/login";
   };
 
@@ -57,7 +70,7 @@ const ProductsPage = () => {
       {/* Header */}
       <div className="flex justify-end h-15 bg-blue-950 text-white items-center px-10">
         <p className="text-sm">
-          {email ? `Welcome, ${email}` : "You are not logged in"}
+          {username ? `Welcome, ${username}` : "You are not logged in"}
         </p>
         <Button
           onClick={handleLogout}
