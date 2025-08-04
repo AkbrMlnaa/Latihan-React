@@ -29,7 +29,6 @@ const ProductsPage = () => {
     }
   }, []);
 
-  // Update total harga dan simpan cart ke localStorage
   useEffect(() => {
     const sum = cart.reduce((acc, item) => {
       const product = products.find((product) => product.id === item.id);
@@ -39,7 +38,7 @@ const ProductsPage = () => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart, products]);
 
-  // Ambil data produk dari API
+
   useEffect(() => {
     getProducts((data) => {
       setProducts(data);
@@ -88,7 +87,7 @@ const ProductsPage = () => {
             products.map((product) => (
               <div key={product.id} className="w-[220px]">
                 <CardProduct>
-                  <CardProduct.Header image={product.image} />
+                  <CardProduct.Header image={product.image} id={product.id} />
                   <CardProduct.Body title={product.title}>
                     {product.description}
                   </CardProduct.Body>
