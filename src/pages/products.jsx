@@ -1,43 +1,13 @@
-import React, { useEffect, useState } from "react";
-import Button from "../components/Elements/Button";
+import { useEffect, useState } from "react";
 import CardProduct from "../components/Fragments/CardProduct";
-import { getProducts } from "../services/produk.service";
-import { getUsername } from "../services/auth.service";
+import { getProducts } from "../services/product.service";
+import TableCart from "../components/Fragments/TableCart";
+import useLogin from "../hooks/useLogin";
+import Navbar from "../components/Layout/Navbar";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [totalHarga, setTotalHarga] = useState(0);
-  const [username, setUsername] = useState("");
-
-  // Ambil cart dari localStorage saat pertama kali render
-  useEffect(() => {
-    setCart(JSON.parse(localStorage.getItem("cart")) || []);
-  }, []);
-
-  useEffect(() => {
-    try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const name = getUsername(token);
-        setUsername(name);
-      } else {
-        window.location.href = "/login";
-      }
-    } catch (err) {
-      console.error("Token tidak valid", err);
-    }
-  }, []);
-
-  useEffect(() => {
-    const sum = cart.reduce((acc, item) => {
-      const product = products.find((product) => product.id === item.id);
-      return acc + (product ? product.price * item.qty : 0);
-    }, 0);
-    setTotalHarga(sum);
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart, products]);
-
+  useLogin()
 
   useEffect(() => {
     getProducts((data) => {
@@ -45,40 +15,10 @@ const ProductsPage = () => {
     });
   }, []);
 
-  // Tambahkan item ke cart
-  const handleAddToCart = (id) => {
-    const existing = cart.find((item) => item.id === id);
-    if (existing) {
-      setCart(
-        cart.map((item) =>
-          item.id === id ? { ...item, qty: item.qty + 1 } : item
-        )
-      );
-    } else {
-      setCart([...cart, { id, qty: 1 }]);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  };
-
   return (
     <div className="w-full overflow-x-hidden">
       {/* Header */}
-      <div className="flex justify-end h-15 bg-blue-950 text-white items-center px-10">
-        <p className="text-sm">
-          {username ? `Welcome, ${username}` : "You are not logged in"}
-        </p>
-        <Button
-          onClick={handleLogout}
-          customize="bg-red-500 ml-4 hover:bg-red-700"
-        >
-          Logout
-        </Button>
-      </div>
-
+      <Navbar/>
       {/* Content */}
       <div className="flex justify-center py-5 gap-10">
         {/* Products */}
@@ -91,11 +31,7 @@ const ProductsPage = () => {
                   <CardProduct.Body title={product.title}>
                     {product.description}
                   </CardProduct.Body>
-                  <CardProduct.Footer
-                    price={product.price}
-                    id={product.id}
-                    onClick={handleAddToCart}
-                  />
+                  <CardProduct.Footer price={product.price} id={product.id} />
                 </CardProduct>
               </div>
             ))}
@@ -104,57 +40,7 @@ const ProductsPage = () => {
         {/* Cart */}
         <div className="w-2/6">
           <h1 className="text-3xl font-bold text-blue-600 ml-5 mb-2">Cart</h1>
-          <table className="text-left table-auto border-separate border-spacing-x-5">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody className="font-semibold text-left">
-              {products.length > 0 &&
-                cart.map((item) => {
-                  const product = products.find(
-                    (product) => product.id === item.id
-                  );
-                  if (!product) return null;
-                  return (
-                    <tr key={item.id}>
-                      <td>{product.title}</td>
-                      <td>
-                        {product.price.toLocaleString("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        })}
-                      </td>
-                      <td>{item.qty}</td>
-                      <td>
-                        {(item.qty * product.price).toLocaleString("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        })}
-                      </td>
-                    </tr>
-                  );
-                })}
-
-              {/* Total Harga */}
-              {cart.length > 0 && (
-                <tr>
-                  <td>Total Harga</td>
-                  <td colSpan={2}></td>
-                  <td>
-                    {totalHarga.toLocaleString("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    })}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+          <TableCart products={products}/>
         </div>
       </div>
     </div>
