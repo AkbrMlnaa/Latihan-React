@@ -11,6 +11,6 @@ const RegisterPage = () => {
     <FormLogin />
     </AuthLayout>
   );
-}
+};
 
 export default RegisterPage;
