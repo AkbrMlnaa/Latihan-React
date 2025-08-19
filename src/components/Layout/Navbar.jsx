@@ -11,7 +11,7 @@ const Navbar = () => {
 
 useEffect(() => {
   const sum = cart.reduce((acc, item) => {
-    return acc + item.qty;
+    return acc +  Number(item.qty || 0);
   }, 0);
   setTotalCart(sum);
 }, [cart]);
